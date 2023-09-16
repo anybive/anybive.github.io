@@ -1,0 +1,241 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>STM32CubeMX + Clion 环境配置 | z</title>
+<link rel="shortcut icon" href="https://anybive.github.io//favicon.ico?v=1694854543117">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://anybive.github.io//styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="STM32CubeMX + Clion 环境配置 | z - Atom Feed" href="https://anybive.github.io//atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="部分配置过程参考大佬 稚晖君 的帖子：https://zhuanlan.zhihu.com/p/145801160
+基于 scoop 配置环境，包括 stm32cubemx clion gcc-arm-none-eabi openocd 等..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://anybive.github.io/">
+  <img class="avatar" src="https://anybive.github.io//images/avatar.png?v=1694854543117" alt="">
+  </a>
+  <h1 class="site-title">
+    z
+  </h1>
+  <p class="site-description">
+    
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          标签
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          关于
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              STM32CubeMX + Clion 环境配置
+            </h2>
+            <div class="post-info">
+              <span>
+                2023-09-16
+              </span>
+              <span>
+                4 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>部分配置过程参考大佬 <strong>稚晖君</strong> 的帖子：https://zhuanlan.zhihu.com/p/145801160<br>
+基于 scoop 配置环境，包括 stm32cubemx clion gcc-arm-none-eabi openocd 等，也可手动部署，需要配置相关环境变量</p>
+<!-- more -->
+<h1 id="0-环境简介">0. 环境简介</h1>
+<p>本文基于 scoop 配置相关运行环境，需要的软件包包括：</p>
+<ol>
+<li>stm32cubemx : https://www.st.com/zh/development-tools/stm32cubemx.html</li>
+<li>clion : https://www.jetbrains.com/clion/</li>
+<li>gcc-arm-none-eabi : https://developer.arm.com/downloads/-/gnu-rm</li>
+<li>openocd : https://openocd.org/</li>
+</ol>
+<p>手动部署需要下载以上软件包，并配置相关环境变量</p>
+<h1 id="1-配置-scoop">1. 配置 scoop</h1>
+<p>scoop 的官方地址 : https://scoop.sh/<br>
+首先打开 powershell ，执行下列语句以允许脚本执行 ：<code>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code><br>
+在默认位置安装只需要执行 : <code>irm get.scoop.sh | iex</code><br>
+若要在指定 path 安装，则先执行脚本下载 :  <code>irm get.scoop.sh -outfile 'install.ps1'</code><br>
+而后运行脚本并通过 -ScoopDir 参数指定安装路径 : <code>.\install.ps1 -ScoopDir 'path_to_your_dir'</code><br>
+scoop 的存储库均使用 git 从 GitHub 拉取，在设置好 scoop 后，请执行以下指令：</p>
+<pre><code># 安装git
+scoop install git
+# 安装aria2加速下载
+scoop install aria2
+# 添加extras仓库
+scoop buckets add extras  
+scoop install clion
+scoop install gcc-arm-none-eabi
+scoop install openocd
+</code></pre>
+<h1 id="2-配置-clion">2. 配置 clion</h1>
+<p>配置 clion 前需要安装 stm32cubemx，安装时路径中请勿含有中文或空格<br>
+安装好后打开 clion，在首页-Plugins下可以搜索安装 Chinese Language Pack 实现汉化<br>
+选择新建项目，在左侧边栏选择 STM32CubeMX，此时需要在右侧指定项目的位置：<br>
+<img src="https://anybive.github.io//post-images/1694836291774.png" alt="" loading="lazy"><br>
+点击修正会跳转到设置页面，使用 scoop 安装的软件路径均为 scoop 安装路径下的apps目录下：<br>
+<img src="https://anybive.github.io//post-images/1694836362301.png" alt="" loading="lazy"><br>
+需要注意 openocd 的可执行文件在 bin 目录下<br>
+修改完成点击应用，然后在左侧选择工具链，点击加号，按下图设置：<br>
+<img src="https://anybive.github.io//post-images/1694836673409.png" alt="" loading="lazy"><br>
+设置完成后点击确定，并选择项目位置，点击创建，会进入项目界面。<br>
+Clion会首先运行 STM32CubeMX 生成默认必要文件，若生成时 STM32CubeMX 启动较慢，可能是在下载HAL库文件。推荐先打开 STM32CubeMX 进行库文件的下载</p>
+<h1 id="3-新建项目">3. 新建项目</h1>
+<p>选择项目位置创建并打开项目后，会自动运行  STM32CubeMX 生成部分必要文件，默认选择的配置文件为 STM32F0 型号，大部分情况下并不符合配置要求，下面进行修改</p>
+<ol>
+<li>项目生成结束后会要求选择面板配置文件，此时选择跳过即可。</li>
+<li>在左侧导航窗格中找到 <code>项目名.ioc</code> 文件，并选择通过 STM32CubeMX 打开，此时会打开新的 STM32CubeMX 界面，先点击界面上的 STM32F030F4PX，然后选择芯片的正确型号并进行其他配置</li>
+<li>配置结束后在 Project Manager 界面填写 Project Name（和Clion的项目名相同），Toolchain/IDE 部分选择 STM32CubeIDE，设置完成后点击右上角的 GENERATE CODE 生成代码</li>
+<li>若跳出 overwrite 的 warning，选择 Yes 即可</li>
+</ol>
+<p>成功生成代码后，Clion 会自动检测并更新芯片型号，此时可以在相应目录下编写代码，并可点击右上角🔨图标来编译目标文件</p>
+<h1 id="4-下载与调试">4. 下载与调试</h1>
+<p>代码编写完成后，点击右上角的 <code>项目名.elf</code>，选择编辑配置：<br>
+<img src="https://anybive.github.io//post-images/1694841473655.png" alt="" loading="lazy"><br>
+在第四步中需要选择 openocd 的配置文件，在合适的目录下新建配置文件，名称任意：<code>name.cfg</code><br>
+以 daplink 和 stm32f411 举例，内容如下：</p>
+<pre><code># choose st-link/j-link/dap-link etc.
+adapter driver cmsis-dap 
+transport select swd
+​
+# 0x10000 = 64K Flash Size
+set FLASH_SIZE 0x80000
+​
+source [find target/stm32f4x.cfg]
+​
+# download speed = 10MHz
+adapter speed 10000
+</code></pre>
+<p>source部分表示基于哪个芯片的配置文件，可以从 <code>openocd\current\share\openocd\scripts\target</code> 目录下查看所有的芯片配置文件并修改相应部分<br>
+修改完成并保存后即可下载运行或开启调试模式</p>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#0-%E7%8E%AF%E5%A2%83%E7%AE%80%E4%BB%8B">0. 环境简介</a></li>
+<li><a href="#1-%E9%85%8D%E7%BD%AE-scoop">1. 配置 scoop</a></li>
+<li><a href="#2-%E9%85%8D%E7%BD%AE-clion">2. 配置 clion</a></li>
+<li><a href="#3-%E6%96%B0%E5%BB%BA%E9%A1%B9%E7%9B%AE">3. 新建项目</a></li>
+<li><a href="#4-%E4%B8%8B%E8%BD%BD%E4%B8%8E%E8%B0%83%E8%AF%95">4. 下载与调试</a></li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">下一篇</div>
+            <a href="https://anybive.github.io/post/hello-gridea/">
+              <h3 class="post-title">
+                Hello Gridea
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://anybive.github.io//atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

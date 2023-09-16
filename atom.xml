@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://anybive.github.io/</id>
+    <title>z</title>
+    <updated>2023-09-16T08:55:48.556Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://anybive.github.io/"/>
+    <link rel="self" href="https://anybive.github.io/atom.xml"/>
+    <logo>https://anybive.github.io/images/avatar.png</logo>
+    <icon>https://anybive.github.io/favicon.ico</icon>
+    <rights>All rights reserved 2023, z</rights>
+    <entry>
+        <title type="html"><![CDATA[STM32CubeMX + Clion 环境配置]]></title>
+        <id>https://anybive.github.io/post/stm32cubemx-clion-huan-jing-pei-zhi/</id>
+        <link href="https://anybive.github.io/post/stm32cubemx-clion-huan-jing-pei-zhi/">
+        </link>
+        <updated>2023-09-16T01:18:13.000Z</updated>
+        <summary type="html"><![CDATA[<p>部分配置过程参考大佬 <strong>稚晖君</strong> 的帖子：https://zhuanlan.zhihu.com/p/145801160<br>
+基于 scoop 配置环境，包括 stm32cubemx clion gcc-arm-none-eabi openocd 等，也可手动部署，需要配置相关环境变量</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>部分配置过程参考大佬 <strong>稚晖君</strong> 的帖子：https://zhuanlan.zhihu.com/p/145801160<br>
+基于 scoop 配置环境，包括 stm32cubemx clion gcc-arm-none-eabi openocd 等，也可手动部署，需要配置相关环境变量</p>
+<!-- more -->
+<h1 id="0-环境简介">0. 环境简介</h1>
+<p>本文基于 scoop 配置相关运行环境，需要的软件包包括：</p>
+<ol>
+<li>stm32cubemx : https://www.st.com/zh/development-tools/stm32cubemx.html</li>
+<li>clion : https://www.jetbrains.com/clion/</li>
+<li>gcc-arm-none-eabi : https://developer.arm.com/downloads/-/gnu-rm</li>
+<li>openocd : https://openocd.org/</li>
+</ol>
+<p>手动部署需要下载以上软件包，并配置相关环境变量</p>
+<h1 id="1-配置-scoop">1. 配置 scoop</h1>
+<p>scoop 的官方地址 : https://scoop.sh/<br>
+首先打开 powershell ，执行下列语句以允许脚本执行 ：<code>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code><br>
+在默认位置安装只需要执行 : <code>irm get.scoop.sh | iex</code><br>
+若要在指定 path 安装，则先执行脚本下载 :  <code>irm get.scoop.sh -outfile 'install.ps1'</code><br>
+而后运行脚本并通过 -ScoopDir 参数指定安装路径 : <code>.\install.ps1 -ScoopDir 'path_to_your_dir'</code><br>
+scoop 的存储库均使用 git 从 GitHub 拉取，在设置好 scoop 后，请执行以下指令：</p>
+<pre><code># 安装git
+scoop install git
+# 安装aria2加速下载
+scoop install aria2
+# 添加extras仓库
+scoop buckets add extras  
+scoop install clion
+scoop install gcc-arm-none-eabi
+scoop install openocd
+</code></pre>
+<h1 id="2-配置-clion">2. 配置 clion</h1>
+<p>配置 clion 前需要安装 stm32cubemx，安装时路径中请勿含有中文或空格<br>
+安装好后打开 clion，在首页-Plugins下可以搜索安装 Chinese Language Pack 实现汉化<br>
+选择新建项目，在左侧边栏选择 STM32CubeMX，此时需要在右侧指定项目的位置：<br>
+<img src="https://anybive.github.io//post-images/1694836291774.png" alt="" loading="lazy"><br>
+点击修正会跳转到设置页面，使用 scoop 安装的软件路径均为 scoop 安装路径下的apps目录下：<br>
+<img src="https://anybive.github.io//post-images/1694836362301.png" alt="" loading="lazy"><br>
+需要注意 openocd 的可执行文件在 bin 目录下<br>
+修改完成点击应用，然后在左侧选择工具链，点击加号，按下图设置：<br>
+<img src="https://anybive.github.io//post-images/1694836673409.png" alt="" loading="lazy"><br>
+设置完成后点击确定，并选择项目位置，点击创建，会进入项目界面。<br>
+Clion会首先运行 STM32CubeMX 生成默认必要文件，若生成时 STM32CubeMX 启动较慢，可能是在下载HAL库文件。推荐先打开 STM32CubeMX 进行库文件的下载</p>
+<h1 id="3-新建项目">3. 新建项目</h1>
+<p>选择项目位置创建并打开项目后，会自动运行  STM32CubeMX 生成部分必要文件，默认选择的配置文件为 STM32F0 型号，大部分情况下并不符合配置要求，下面进行修改</p>
+<ol>
+<li>项目生成结束后会要求选择面板配置文件，此时选择跳过即可。</li>
+<li>在左侧导航窗格中找到 <code>项目名.ioc</code> 文件，并选择通过 STM32CubeMX 打开，此时会打开新的 STM32CubeMX 界面，先点击界面上的 STM32F030F4PX，然后选择芯片的正确型号并进行其他配置</li>
+<li>配置结束后在 Project Manager 界面填写 Project Name（和Clion的项目名相同），Toolchain/IDE 部分选择 STM32CubeIDE，设置完成后点击右上角的 GENERATE CODE 生成代码</li>
+<li>若跳出 overwrite 的 warning，选择 Yes 即可</li>
+</ol>
+<p>成功生成代码后，Clion 会自动检测并更新芯片型号，此时可以在相应目录下编写代码，并可点击右上角🔨图标来编译目标文件</p>
+<h1 id="4-下载与调试">4. 下载与调试</h1>
+<p>代码编写完成后，点击右上角的 <code>项目名.elf</code>，选择编辑配置：<br>
+<img src="https://anybive.github.io//post-images/1694841473655.png" alt="" loading="lazy"><br>
+在第四步中需要选择 openocd 的配置文件，在合适的目录下新建配置文件，名称任意：<code>name.cfg</code><br>
+以 daplink 和 stm32f411 举例，内容如下：</p>
+<pre><code># choose st-link/j-link/dap-link etc.
+adapter driver cmsis-dap 
+transport select swd
+​
+# 0x10000 = 64K Flash Size
+set FLASH_SIZE 0x80000
+​
+source [find target/stm32f4x.cfg]
+​
+# download speed = 10MHz
+adapter speed 10000
+</code></pre>
+<p>source部分表示基于哪个芯片的配置文件，可以从 <code>openocd\current\share\openocd\scripts\target</code> 目录下查看所有的芯片配置文件并修改相应部分<br>
+修改完成并保存后即可下载运行或开启调试模式</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Hello Gridea]]></title>
+        <id>https://anybive.github.io/post/hello-gridea/</id>
+        <link href="https://anybive.github.io/post/hello-gridea/">
+        </link>
+        <updated>2018-12-11T16:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>👏  欢迎使用 <strong>Gridea</strong> ！<br>
+✍️  <strong>Gridea</strong> 一个静态博客写作客户端。你可以用它来记录你的生活、心情、知识、笔记、创意... ...</p>
+<!-- more -->
+<p><a href="https://github.com/getgridea/gridea">Github</a><br>
+<a href="https://gridea.dev/">Gridea 主页</a><br>
+<a href="http://fehey.com/">示例网站</a></p>
+<h2 id="特性">特性👇</h2>
+<p>📝  你可以使用最酷的 <strong>Markdown</strong> 语法，进行快速创作</p>
+<p>🌉  你可以给文章配上精美的封面图和在文章任意位置插入图片</p>
+<p>🏷️  你可以对文章进行标签分组</p>
+<p>📋  你可以自定义菜单，甚至可以创建外部链接菜单</p>
+<p>💻  你可以在 <strong>Windows</strong>，<strong>MacOS</strong> 或 <strong>Linux</strong> 设备上使用此客户端</p>
+<p>🌎  你可以使用 <strong>𝖦𝗂𝗍𝗁𝗎𝖻 𝖯𝖺𝗀𝖾𝗌</strong> 或 <strong>Coding Pages</strong> 向世界展示，未来将支持更多平台</p>
+<p>💬  你可以进行简单的配置，接入 <a href="https://github.com/gitalk/gitalk">Gitalk</a> 或 <a href="https://github.com/SukkaW/DisqusJS">DisqusJS</a> 评论系统</p>
+<p>🇬🇧  你可以使用<strong>中文简体</strong>或<strong>英语</strong></p>
+<p>🌁  你可以任意使用应用内默认主题或任意第三方主题，强大的主题自定义能力</p>
+<p>🖥  你可以自定义源文件夹，利用 OneDrive、百度网盘、iCloud、Dropbox 等进行多设备同步</p>
+<p>🌱 当然 <strong>Gridea</strong> 还很年轻，有很多不足，但请相信，它会不停向前 🏃</p>
+<p>未来，它一定会成为你离不开的伙伴</p>
+<p>尽情发挥你的才华吧！</p>
+<p>😘 Enjoy~</p>
+]]></content>
+    </entry>
+</feed>
